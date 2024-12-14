@@ -19,7 +19,7 @@ INSERT INTO "USER" (name, email, role	) VALUES
 ('李燕容','lee2000@hexschooltest.io','USER'),
 ('王小明','wXlTq@hexschooltest.io','USER'),
 ('肌肉棒子','muscle@hexschooltest.io','USER'),
-('好野人',' ','USER'),
+('好野人','richman@hexschooltest.io','USER'),
 ('Q太郎','starplatinum@hexschooltest.io','USER'),
 ('透明人','opacity0@hexschooltest.io','USER');
 
@@ -98,17 +98,58 @@ VALUES
     -- 2. 將用戶`肌肉棒子`新增為教練，並且年資設定為2年
     -- 3. 將用戶`Q太郎`新增為教練，並且年資設定為2年
 
+insert into "COACH" (user_id, experience_years)
+values
+(
+	(select id from "USER" where email = 'lee2000@hexschooltest.io'),
+	2
+),
+(
+	(select id from "USER" where email = 'muscle@hexschooltest.io'),
+	2
+),
+(
+	(select id from "USER" where email = 'starplatinum@hexschooltest.io'),
+	2
+);
+
 -- 3-2. 新增：承1，為三名教練新增專長資料至 `COACH_LINK_SKILL` ，資料需求如下：
     -- 1. 所有教練都有 `重訓` 專長
-    -- 2. 教練`肌肉棒子` 需要有 `瑜伽` 專長
+    -- 2. 教練`肌肉棒子` 需要有 `瑜伽` 專長 
     -- 3. 教練`Q太郎` 需要有 `有氧運動` 與 `復健訓練` 專長
+
+INSERT INTO "COACH_LINK_SKILL" (coach_id, skill_id)
+VALUES
+(
+    (SELECT id FROM "COACH" WHERE user_id = (SELECT id FROM "USER" WHERE email = 'lee2000@hexschooltest.io')),
+    (SELECT id FROM "SKILL" WHERE name = '重訓')
+),
+(
+    (SELECT id FROM "COACH" WHERE user_id = (SELECT id FROM "USER" WHERE email = 'muscle@hexschooltest.io')),
+    (SELECT id FROM "SKILL" WHERE name = '重訓')
+),
+(
+    (SELECT id FROM "COACH" WHERE user_id = (SELECT id FROM "USER" WHERE email = 'starplatinum@hexschooltest.io')),
+    (SELECT id FROM "SKILL" WHERE name = '重訓')
+);
+
 
 -- 3-3 修改：更新教練的經驗年數，資料需求如下：
     -- 1. 教練`肌肉棒子` 的經驗年數為3年
     -- 2. 教練`Q太郎` 的經驗年數為5年
 
+UPDATE "COACH"
+SET experience_years = 3
+WHERE user_id = (SELECT id FROM "USER" WHERE email = 'muscle@hexschooltest.io');
+
+UPDATE "COACH"
+SET experience_years = 5
+WHERE user_id = (SELECT id FROM "USER" WHERE email = 'starplatinum@hexschooltest.io');  
+
 -- 3-4 刪除：新增一個專長 空中瑜伽 至 SKILL 資料表，之後刪除此專長。
 
+insert into "SKILL" (name) values ('空中瑜珈');
+delete from "SKILL" where name = '空中瑜珈';
 
 --  ████████  █████   █    █   █ 
 --    █ █   ██    █  █     █   █ 
